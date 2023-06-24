@@ -9,7 +9,7 @@ def get_ethereum_node_connection() -> Web3:
         return w3
 
     except AssertionError:
-        raise RuntimeError("Could not connect to Ethereum node.")
+        raise RuntimeError("Could not connect to Ethereum node. Please, check that provided endpoint is correct")
 
     except Exception as e:
         raise RuntimeError(f"Error when connecting to Ethereum node. Error message: {e}")
