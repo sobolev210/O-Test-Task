@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from .utils import get_required_env_value
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -140,7 +142,12 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-API_VERSION_PREFIX = os.getenv('API_VERSION_PREFIX')  # '/api/v1/'
+API_VERSION_PREFIX = os.getenv('API_VERSION_PREFIX', '/api/v1/')
 
 # Remote node endpoint
-REMOTE_NODE_ENDPOINT = os.getenv('REMOTE_NODE_ENDPOINT')
+REMOTE_NODE_ENDPOINT = get_required_env_value('REMOTE_NODE_ENDPOINT')
+
+# Password for encrypting private_key of a wallet. Simple, but not production-ready solution.
+# It will be just one password for encrypting all the private keys for all wallets.
+# It can also be used to decrypt all stored private keys.
+PRIVATE_KEY_ENCRYPTION_PASS = get_required_env_value("PRIVATE_KEY_ENCRYPTION_PASS")

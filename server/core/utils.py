@@ -1,4 +1,4 @@
-from web3 import Web3, EthereumTesterProvider
+from web3 import Web3
 from django.conf import settings
 
 

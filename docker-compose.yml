@@ -11,6 +11,7 @@ services:
        PG_HOST: "postgresql"
        API_VERSION_PREFIX: "/api/v1/"
        REMOTE_NODE_ENDPOINT: "" #specify your node endpoint here
+       PRIVATE_KEY_ENCRYPTION_PASS: "" #specify your password for private_key encryption here (see settings.py for more info)
 
   postgresql:
     image: postgres
