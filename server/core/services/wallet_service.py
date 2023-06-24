@@ -13,7 +13,7 @@ class WalletService:
         wallet = Wallet(
             currency=currency,
             public_key=account.address,
-            private_key=account.key
+            private_key=account.key  # not production-ready solution
         )
         wallet.save()
         return wallet
