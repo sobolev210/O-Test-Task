@@ -23,5 +23,5 @@ services:
 
 
 # if you want to keep your data persisted
-volumes:
-  cryptocurrency_service_db:
+#volumes:
+#  cryptocurrency_service_db:
