@@ -1,22 +1,32 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
-from web3 import Web3
+from drf_spectacular.utils import extend_schema
 
-from .utils import get_ethereum_node_connection
+from .models import Wallet
+from .serializers import WalletSerializer, WalletCreateRequestSerializer, WalletCreateResponseSerializer
+from .services.wallet_service import WalletService
+from core.utils import get_ethereum_node_connection
 
 
 class WalletViewSet(viewsets.GenericViewSet):
-    queryset = None  # update
-    serializer_class = None  # update
-    w3: Web3 = get_ethereum_node_connection()
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer
+    wallet_service = WalletService(get_ethereum_node_connection())
 
     def list(self, request):
-        return Response("List of wallets (balances included)")
+        data = self.serializer_class(
+            self.get_queryset(), many=True, context={"wallet_service": self.wallet_service}
+        ).data
+        return Response(data)
 
+    @extend_schema(
+        request=WalletCreateRequestSerializer,
+        responses={201: WalletCreateResponseSerializer}
+    )
     def create(self, request):
-        account = self.w3.eth.account.create()
-        return Response(
-            f"Wallet created. Address: {account.address}, "
-            f"private key: {account.key}, "
-            f"balance: {self.w3.eth.get_balance(account.address)}",
-        )
+        serializer = WalletCreateRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            wallet = self.wallet_service.create_wallet(currency=serializer.validated_data.get("currency"))
+            return Response(WalletCreateResponseSerializer(wallet).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

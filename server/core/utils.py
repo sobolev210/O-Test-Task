@@ -1,9 +1,10 @@
 from web3 import Web3, EthereumTesterProvider
+from django.conf import settings
 
 
-def get_ethereum_node_connection():
+def get_ethereum_node_connection() -> Web3:
     try:
-        w3 = Web3(EthereumTesterProvider())
+        w3 = Web3(Web3.HTTPProvider(settings.REMOTE_NODE_ENDPOINT))
         assert w3.is_connected() is True
         return w3
 

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    'drf_spectacular',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,9 +77,13 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "cryptocurrency_service",
+        "USER": "postgres",
+        "PASSWORD": "secret",
+        "HOST": os.getenv("PG_HOST", "127.0.0.1"),
+        "PORT": "5432",
     }
 }
 
@@ -124,5 +129,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# todo наверное, раскомментить получение из переменных окружения
-API_VERSION_PREFIX = '/api/v1/'  # os.getenv("API_VERSION_PREFIX")
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cryptocurrency service API',
+    'DESCRIPTION': 'Service to manage cryptocurrency wallets',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+API_VERSION_PREFIX = os.getenv('API_VERSION_PREFIX')  # '/api/v1/'
+
+# Remote node endpoint
+REMOTE_NODE_ENDPOINT = os.getenv('REMOTE_NODE_ENDPOINT')

@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  cryptocurrency_service:
+    build: .
+    depends_on:
+      - postgresql
+    ports:
+      - 8000:8000
+    environment:
+       PG_HOST: "postgresql"
+       API_VERSION_PREFIX: "/api/v1/"
+       REMOTE_NODE_ENDPOINT: "" #specify your node endpoint here
+
+  postgresql:
+    image: postgres
+    # if you want to keep your data persisted
+    #volumes:
+    #- cryptocurrency_service_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "secret"
+      POSTGRES_DB: "cryptocurrency_service"
+
+
+# if you want to keep your data persisted
+volumes:
+  cryptocurrency_service_db:

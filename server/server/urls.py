@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from . import settings
+
 from core.views import WalletViewSet
 
 router = DefaultRouter()
@@ -28,4 +30,8 @@ router.register(r'wallets', WalletViewSet, basename='wallet')
 urlpatterns = [
     path(f"{settings.API_VERSION_PREFIX.strip('/')}/", include(router.urls)),
     path("admin/", admin.site.urls),
+
+    path(f"{settings.API_VERSION_PREFIX.strip('/')}/schema/", SpectacularAPIView.as_view(), name='schema'),
+    path(f"{settings.API_VERSION_PREFIX.strip('/')}/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path(f"{settings.API_VERSION_PREFIX.strip('/')}/schema/redoc/", SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
